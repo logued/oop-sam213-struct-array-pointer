@@ -20,8 +20,8 @@
 
 using namespace std;
 
-struct Movie {            //  Movie struct
-    string title;
+struct Movie {          // Movie struct
+    string title;       // is a template for making structs
     int year;
 };
 
@@ -95,7 +95,7 @@ int main() {
     // of the memory allocated, therefore, we must declare a pointer to store the returned address.
 
     // Allocate a block of memory big enough to store one Movie struct
-    // The movie struct object is stored in the HEAP.
+    // The movie struct object is stored in the HEAP part of memory.
     Movie * ptrMovie = new Movie;
 
     ptrMovie->title = "Baby Driver";    // using the ARROW member access operator
@@ -113,7 +113,7 @@ int main() {
     // Remember, if we allocate memory using "new" then
     // we MUST always free that memory using "delete"
     delete ptrMovie;
-    ptrMovie = nullptr; // set pointer to null
+    ptrMovie = nullptr; // it is good practice to set pointer to null straight after delete
 
     //////////////////////// Dynamically allocate an Array of Struct ////////////////////////
 
@@ -164,6 +164,7 @@ int main() {
     // When finished - we must remember to free dynamic memory that we allocated.
     // The brackets [] are required, and it is an error to omit them.
     delete[] movies;    // 'delete' dynamically allocate array of memory from the Heap
+    movies = nullptr; // it is good practice to set pointer to null straight after delete
 
     // Dynamically allocate an array of struct and use pointer notation to access the elements.
 
@@ -189,6 +190,8 @@ int main() {
 
     // Free up the dynamic memory
     delete [] movie_ptr_start;
+
+    // movie_ptr_start = nullptr; // cant set thi sto null as it was declared as const
 
     cout << "End of struct samples. - Goodbye!" << endl;
 
