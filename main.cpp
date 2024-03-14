@@ -191,7 +191,7 @@ int main() {
     // Free up the dynamic memory
     delete [] movie_ptr_start;
 
-    // movie_ptr_start = nullptr; // cant set thi sto null as it was declared as const
+    // movie_ptr_start = nullptr; // can not set this to null as it was declared as const
 
     cout << "End of struct samples. - Goodbye!" << endl;
 
