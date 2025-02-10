@@ -20,13 +20,15 @@
 
 using namespace std;
 
+// Struct definition will be visible/accessible from here to end of this file.
+//
 struct Movie {          // Movie struct
     string title;       // is a template for making structs
-    int year;
+    int year;           // fields are public by default (unlike classes)
 };
 
 // function prototypes
-void print_movie_pass_by_reference(const Movie &movie);
+void print_movie_pass_by_reference(const Movie& movie);
 void print_movie_pass_by_value(Movie movie);
 void print_movie_pass_by_pointer(Movie* ptrMovie);
 
@@ -34,16 +36,16 @@ int main() {
     cout << "Structs demo" << endl;
 
     Movie myFavouriteMovie; // declares a struct (object) in stack memory
+    // note that fields in the struct are NOT initialized with values and will contain some 'random' value
 
-    // we use the member access operator dot "." to access individual members (fields)
-
-    myFavouriteMovie.title = "2001 A Space Odyssey";    // possible because struct members are public
+    // we use the "member access operator" dot "." to access individual members (fields)
+    myFavouriteMovie.title = "2001 A Space Odyssey";    // direct access possible because struct members are public
     myFavouriteMovie.year = 1968;
 
     cout << "My favorite movie is:\n ";
     print_movie_pass_by_reference(myFavouriteMovie);
 
-    Movie yourFavouriteMovie;                // declare a struct (object)  called 'yourFavouriteMovie' of type movie_type
+    Movie yourFavouriteMovie;                // declare a struct (object)  called 'yourFavouriteMovie' of type Movie
     cout << "What is your favourite movie?" << endl;
     cout << "Enter title: ";
     getline(cin, yourFavouriteMovie.title);    // read directly into the struct
@@ -53,8 +55,8 @@ int main() {
     getline(cin, input);
     stringstream(input) >> yourFavouriteMovie.year;
 
-    cout << "And yourFavouriteMovie is:\n ";
-    print_movie_pass_by_reference(yourFavouriteMovie);
+    cout << "And, yourFavouriteMovie is:\n ";
+    print_movie_pass_by_reference(yourFavouriteMovie); // function uses a reference parameter (see below)
 
     cout << "Demonstrating pass-by-value" << endl;
     cout << "My favorite movie is:\n ";
@@ -62,7 +64,7 @@ int main() {
     cout << "... passing a struct by-value is expensive, because a COPY of all member data is passed." << endl;
     cout << "... (Note: Java can never do this because Java always passes references to objects.))" << endl;
 
-    print_movie_pass_by_value(myFavouriteMovie);
+    print_movie_pass_by_value(myFavouriteMovie);    // pass a copy of the movie struct object
 
     cout << "My favorite movie is:\n ";
     print_movie_pass_by_value(myFavouriteMovie);
@@ -70,7 +72,7 @@ int main() {
 
     cout << "Demo: return (by-value) a struct object that was defined in a function:" << endl;
 
-    print_movie_pass_by_pointer( &myFavouriteMovie );   // get and pass the address of a struct
+    print_movie_pass_by_pointer( &myFavouriteMovie );   // get and pass the address of a struct object
 
     ////////////////////////////// Array of struct ////////////////////////////////////////////////
 
@@ -87,15 +89,16 @@ int main() {
     for (int i = 0; i < 3; i++)
         cout << i << ": " << myTop3Movies[i].title << ", " << myTop3Movies[i].year << endl;
 
-
     //////  DMA (Dynamic Memory Allocation) //////////////////////////////
 
     // Dynamically allocate a block of memory to store a single struct
-    // and access it using a pointer.  Remember that 'new' always returns the address
+    // and access it using a pointer.
+    // Remember that 'new' always returns the address
     // of the memory allocated, therefore, we must declare a pointer to store the returned address.
+    // Dynamically allocated objects are always accesses using a pointer.
 
-    // Allocate a block of memory big enough to store one Movie struct
-    // The movie struct object is stored in the HEAP part of memory.
+    // Allocate a block of memory big enough to store one Movie struct.
+    // The movie struct object is allocated from the HEAP part of memory. (Dynamic memory area)
     Movie * ptrMovie = new Movie;
 
     ptrMovie->title = "Baby Driver";    // using the ARROW member access operator
@@ -103,7 +106,7 @@ int main() {
 
     // cout << *ptrMovie;  - won't work as 'cout' doesn't know what a Movie struct is
     // and thus, does not know how to interpret its contents for printing.
-    // Therefore, we must output by accessing each member individually.
+    // Therefore, (for the moment) we must output by accessing each member individually.
     cout << "\nDynamically allocated struct" << endl;
 
     cout << ptrMovie->title << endl;
@@ -124,13 +127,15 @@ int main() {
     // In this case ,we could input the size of the array required.
     // cout << "Enter size of array:";
     // cin >> size;
+    // This is one of the main advantages of Dynamic Memory - we can ask for the amount
+    // od space we need at Run Time - as the program is running.
 
     size = 3;
 
-    Movie * movies = new Movie[size];
+    Movie* movies = new Movie[size];
 
     // Above - allocate block of memory big enough to store 'size' number of Movie structs
-    // That is - an array of Movie structs.
+    // That is - an array of 3 Movie structs.
     // "movies" is a pointer to the first Movie struct element in the array.
     // If using array notation, it is clearer to simply name the pointer 'movies',
     // and use array notation to treat it as a 'movies' array.  The code then
@@ -162,9 +167,12 @@ int main() {
     }
 
     // When finished - we must remember to free dynamic memory that we allocated.
-    // The brackets [] are required, and it is an error to omit them.
+    // The brackets [] are required to indicate that we are freeing an array of elements,
+    // and it is an error to omit them.
+    //
     delete[] movies;    // 'delete' dynamically allocate array of memory from the Heap
-    movies = nullptr; // it is good practice to set pointer to null straight after delete
+    movies = nullptr; // it is good practice to set the pointer to null straight after delete
+                        // so that it cannot be accidentally used after this line.
 
     // Dynamically allocate an array of struct and use pointer notation to access the elements.
 
@@ -178,7 +186,7 @@ int main() {
     movie_ptr_start[2].title = "Independence Day";
     movie_ptr_start[2].year = 2004;
 
-    ptrMovie = movie_ptr_start; // initialize a pointer that can be incremented to access elements
+    ptrMovie = movie_ptr_start; // initialize a second pointer that can be incremented to access elements
 
     cout << "\nIncrement pointer to access struct array elements." << endl;
     for (int i = 1; i <= size; i++) {
@@ -190,7 +198,6 @@ int main() {
 
     // Free up the dynamic memory
     delete [] movie_ptr_start;
-
     // movie_ptr_start = nullptr; // can not set this to null as it was declared as const
 
     cout << "End of struct samples. - Goodbye!" << endl;
@@ -214,7 +221,7 @@ int main() {
    that it refers to.
 */
 
-void print_movie_pass_by_reference(const Movie &movie)      // reference to a movie struct
+void print_movie_pass_by_reference(const Movie& movie)      // reference to a movie struct
 {
     cout << movie.title;            // note public access to member data
     cout << " (" << movie.year << ")" << endl;
@@ -247,9 +254,9 @@ void print_movie_pass_by_value(Movie movie) {
  * the pointer with "const".  (const Movie * ptrMovie)
  *
  */
-void print_movie_pass_by_pointer( Movie * ptrMovie) {   //ptrMovie is a pointer to a Movie object
+void print_movie_pass_by_pointer( Movie* ptrMovie) {   //ptrMovie is a pointer to a Movie object
     cout << "... in print_movie_pass_by_pointer() " << endl;
-    cout << ptrMovie->title;            // note public access to member data
+    cout << ptrMovie->title;            // note public access to member data of a struct
     cout << " (" << ptrMovie->year << ")" << endl;
 
     // pointer can be used to access the movie struct that it points to.
